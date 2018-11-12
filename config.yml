@@ -1,0 +1,7 @@
+comments: store env variable
+logconf:
+  name: crawl
+  level: DEBUG
+  logpath: ./
+  logprefix: crun
+  logpostfix: .log
