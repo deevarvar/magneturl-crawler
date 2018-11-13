@@ -5,17 +5,14 @@ import logging
 import time
 from functools import wraps
 import os
-from utils import test
-
-logger = logging.getLogger("crawl")
-path = './'
-logprefix = "crun_"
-timestamp = time.strftime('%Y_%m_%d_%H_%M_%S', time.gmtime())
-logpostfix = '.log'
+from utils import getlogconf
 
 
 def initlogger():
-    logger.setLevel(logging.DEBUG)
+    timestamp = time.strftime('%Y_%m_%d_%H_%M_%S', time.gmtime())
+    logname, logpath, loglevel, logprefix, logpostfix = getlogconf()
+    logger = logging.getLogger(logname)
+    logger.setLevel(loglevel)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s '
                                   '- %(funcName)s - %(lineno)d - %(message)s')
 
@@ -26,11 +23,15 @@ def initlogger():
     logger.addHandler(ch)
 
     # file handler, set to debug
-    fh = logging.FileHandler(os.path.join('./',
+    fh = logging.FileHandler(os.path.join(logpath,
                                           ''.join([logprefix, timestamp, logpostfix])))
     fh.setLevel(logging.DEBUG)
     fh.setFormatter(formatter)
     logger.addHandler(fh)
+    return logger
+
+
+logger = initlogger()
 
 
 def elapsedtime(func):
@@ -55,7 +56,6 @@ def hello():
         pass
     logger.info('hello world')
 
-initlogger()
-hello()
-test()
-logger.debug('end')
+
+if __name__ == '__main__':
+    hello()
