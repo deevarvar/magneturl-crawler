@@ -5,9 +5,12 @@
 - unittests
 ## DONE
 - use yaml as config file
-- pyquery to get entry
+- pyquery to get entry url
+
 
 ## TODO
 * http://www.btyunsou.co/
     * validate the search uri
     * store hot search
+    * add argparser
+ 

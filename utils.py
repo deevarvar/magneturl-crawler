@@ -11,6 +11,7 @@ class dotdict(dict):
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
 
+
 def defaultlogconf(logconf):
     logconf.setdefault('name', 'crawl')
     logconf.setdefault('path', './')

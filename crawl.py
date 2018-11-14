@@ -13,13 +13,14 @@ import sys
 from io import open
 PY3k = sys.version_info >= (3,)
 
-NORMALURL="http://www.btyunsou.co/"
+NORMALURL="http://www.btyunsou.co"
 MAINHTML="./btmain.html"
 HEADERS = {
     'X-Requested-With': 'XMLHttpRequest',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 '
                   '(KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
 }
+QUERYURL=''
 
 def initlogger():
     timestamp = time.strftime('%Y_%m_%d_%H_%M_%S', time.gmtime())
@@ -69,20 +70,14 @@ def hello():
         pass
     logger.info('hello world')
 
+
 @elapsedtime
-def findquery():
+def gethtml(url, outhtml=MAINHTML):
     try:
-        rsp = requests.get(NORMALURL,headers=HEADERS)
-        with open(MAINHTML, encoding='utf-8', mode='w+') as mainhtml:
+        rsp = requests.get(url, headers=HEADERS)
+        with open(outhtml, encoding='utf-8', mode='w+') as mainhtml:
             mainhtml.write(rsp.text)
-        page = pq(rsp.text)
-        form = page('form')
-        if form is None:
-            raise Exception("no form in url")
-        # get action, method in form
-        logger.info('form method is {0}, action is {1}'.format(form.attr('method'), form.attr('action')))
-        # get input name, input id is 'search'
-        logger.info('input keyword is {}'.format(form('#search').attr('name')))
+        return rsp.text
 
     except requests.exceptions.HTTPError as errh:
         logger.error("Http Error: {}".format(errh))
@@ -100,13 +95,38 @@ def findquery():
         etype = sys.exc_info()[0]
         estr = sys.exc_info()[1]
         logger.error("Exceptions: {} {}".format(etype, estr))
+        sys.exit(-1)
 
-def getresult():
-    pass
+
+@elapsedtime
+def getqueryurl():
+    html = gethtml(url=NORMALURL)
+    page = pq(html)
+    form = page('form')
+    if form is None:
+        raise Exception("no form in url")
+    # get action, method in form
+    method = form.attr('method')
+    if method != 'get':
+        raise Exception("query method is {}".format(method))
+    action = form.attr('action')
+    logger.info('form method is {0}, action is {1}'.format(method, action))
+
+    # get input name, input id is 'search'
+    keyword = form('#search').attr('name')
+    logger.info('input keyword is {}'.format(keyword))
+    return ''.join([NORMALURL, action, '?' + keyword + '='])
+
+
+def query(kw):
+    qurl = QUERYURL + kw
+    logger.info('search url is {}'.format(qurl))
+    rsp = gethtml(url=qurl,outhtml=''.join(['./', kw, '.html']))
 
 
 
 if __name__ == '__main__':
     hello()
-    findquery()
-
+    QUERYURL = getqueryurl()
+    logger.info('query url is {}'.format(QUERYURL))
+    query(kw='big bang')
