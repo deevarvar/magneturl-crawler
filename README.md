@@ -11,6 +11,11 @@
 ## TODO
 * http://www.btyunsou.co/
     * validate the search uri
+    * ctime, click, length
+        * store in config.yml
+    * mirror a site to do unittest
     * store hot search
     * add argparser
+* define a search engine class
+* store search result in db, display in web gui.
  

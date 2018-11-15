@@ -11,7 +11,15 @@ import requests
 import sys
 #python 2.x do not support encoding in open
 from io import open
+
 PY3k = sys.version_info >= (3,)
+if not PY3k:
+    from urllib import quote
+else:
+    from urllib.parse import quote
+
+
+
 
 NORMALURL="http://www.btyunsou.co"
 MAINHTML="./btmain.html"
@@ -123,6 +131,13 @@ def query(kw):
     logger.info('search url is {}'.format(qurl))
     rsp = gethtml(url=qurl,outhtml=''.join(['./', kw, '.html']))
 
+def getcategory():
+    """
+    div .sort
+    three categories
+    :return:
+    """
+    pass
 
 
 if __name__ == '__main__':
