@@ -17,5 +17,9 @@
     * store hot search
     * add argparser
 * define a search engine class
+    * base url
+    * search path
+    * keyword
+    * result uri
 * store search result in db, display in web gui.
  

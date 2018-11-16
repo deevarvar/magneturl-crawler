@@ -9,6 +9,7 @@ from utils import getlogconf
 from pyquery import PyQuery as pq
 import requests
 import sys
+import re
 #python 2.x do not support encoding in open
 from io import open
 
@@ -20,8 +21,8 @@ else:
 
 
 
-
-NORMALURL="http://www.btyunsou.co"
+BTDOMAIN='www.btyunsou.co'
+NORMALURL=''.join(['http://', BTDOMAIN]) #"http://www.btyunsou.co"
 MAINHTML="./btmain.html"
 HEADERS = {
     'X-Requested-With': 'XMLHttpRequest',
@@ -127,21 +128,34 @@ def getqueryurl():
 
 
 def query(kw):
+    """
+    from one result page to
+    :param kw:
+    :return:
+    """
     qurl = QUERYURL + kw
     logger.info('search url is {}'.format(qurl))
     rsp = gethtml(url=qurl,outhtml=''.join(['./', kw, '.html']))
 
-def getcategory():
-    """
-    div .sort
-    three categories
-    :return:
-    """
-    pass
+    # get category dict list
+    # in case admin will change it.
+    # current pattern is field2 delemitered by _ like'/search/big%20bang_length_1.html'
+    page = pq(rsp)
+    try:
+        categorylist = [{'kw': a.attr('href').split('_')[1], 'text' : a.text()}
+                        for a in page('div .sort li a').items()]
+        #[{'text': '收录时间', 'kw': 'ctime'}, {'text': '活跃热度', 'kw': 'click'}, {'text': '文件大小', 'kw': 'length'}]
+        logger.info("page category is {}".format(categorylist))
+
+    except:
+        etype = sys.exc_info()[0]
+        estr = sys.exc_info()[1]
+        logger.error("Exceptions: {} {}".format(etype, estr))
+        sys.exit(-1)
+    return categorylist
 
 
 if __name__ == '__main__':
-    hello()
     QUERYURL = getqueryurl()
     logger.info('query url is {}'.format(QUERYURL))
     query(kw='big bang')
