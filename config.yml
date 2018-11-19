@@ -5,3 +5,8 @@ logconf:
   path: ./
   postfix: .log
   prefix: crun_
+btyunso:
+  domain: www.btyunsou.co
+  scheme: http
+  entryhtml: btmain.html
+  samplehtm: entry.html

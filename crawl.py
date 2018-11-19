@@ -5,7 +5,7 @@ import logging
 import time
 from functools import wraps
 import os
-from utils import getlogconf
+from utils import getlogconf, elapsedtime, logger
 from pyquery import PyQuery as pq
 import requests
 import sys
@@ -53,26 +53,6 @@ def initlogger():
     logger.addHandler(fh)
     return logger
 
-
-logger = initlogger()
-
-
-def elapsedtime(func):
-    """
-    Decorrator that caculate the exe time
-    :param func:
-    :return:
-    """
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        start = time.time()
-        result = func(*args, **kwargs)
-        end = time.time()
-        print("{0} runned {1:.7f} seconds".format(func.__name__, end - start))
-        return result
-    return wrapper
-
-
 @elapsedtime
 def hello():
     for i in range(10000000):
@@ -84,6 +64,7 @@ def hello():
 def gethtml(url, outhtml=MAINHTML):
     try:
         rsp = requests.get(url, headers=HEADERS)
+        logger.info('encoding is {}'.format(rsp.encoding))
         with open(outhtml, encoding='utf-8', mode='w+') as mainhtml:
             mainhtml.write(rsp.text)
         return rsp.text
@@ -158,4 +139,5 @@ def query(kw):
 if __name__ == '__main__':
     QUERYURL = getqueryurl()
     logger.info('query url is {}'.format(QUERYURL))
-    query(kw='big bang')
+    cq = query(kw='big bang')
+
