@@ -7,6 +7,9 @@ logconf:
   prefix: crun_
 btyunso:
   domain: www.btyunsou.co
-  scheme: http
-  entryhtml: btmain.html
-  samplehtm: entry.html
+  schema: http://
+  method: get
+  # http://www.btyunsou.co/search?kw=
+  action: /search
+  keyword: kw?
+
