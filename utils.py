@@ -43,6 +43,7 @@ class DotDict(dict):
 class YamlConfig(dict):
     def __init__(self, filename=CONFIGYML):
         self.filename = filename
+        super(YamlConfig, self).__init__()
         if os.path.isfile(CONFIGYML):
             with open(filename, 'r') as f:
                 super(YamlConfig, self).update(yaml.safe_load(f) or {})
@@ -194,7 +195,7 @@ def query(kw):
     """
     qurl = getqueryurl() + kw
     logger.info('search url is {}'.format(qurl))
-    rsp = gethtml(url=qurl,outhtml=''.join(['./', kw, '.html']))
+    rsp = gethtml(url=qurl, outhtml=''.join(['./', kw, '.html']))
 
     # get category dict list
     # in case admin will change it.

@@ -25,7 +25,7 @@ class TestBtyunso(unittest.TestCase):
         page = pq(html)
         form = page('form')
         # should have the form element
-        self.assertIsNotNone(form.html())
+        self.assertIsNotNone(form.text())
         method = form.attr('method')
         action = form.attr('action')
         # method should be 'get'
@@ -38,7 +38,8 @@ class TestBtyunso(unittest.TestCase):
         queryurl = "http://www.btyunsou.co/search?kw=" + kw
         html = gethtml(url=queryurl, outhtml=os.path.join(self.outpath, kw + '.html'))
         page = pq(html)
-        clist = [ a.attr('href').split('_')[1] for a in page('div .sort li a').items()]
+        clist = [ a.attr('href').split('_')[1] for a in page('div.sort li a').items()]
+        # btyunsou is quite simple, three categories
         self.assertEqual(Counter(clist), Counter(['ctime', 'length', 'click']))
 
 
