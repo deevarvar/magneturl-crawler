@@ -1,4 +1,4 @@
-# -*- encoding=utf-8 -*-
+# -*- encoding: utf-8 -*-
 # author: zhihuaye@gmail.com
 import yaml
 import os

@@ -27,8 +27,8 @@ def btyunso(kw="big bang"):
     # btyunso is not that good, always return 100 pages and 10 per page
     rsp = gethtml(url=qurl, outhtml=os.path.join('./', kwpage))
     html = pq(rsp)
-    # get all title
-
+    # get all title, seems py2 is unicode, so convert to str
+    # py3 get bytes
     titlelist = [title.text().encode('utf-8') for title in html('a.title').items()]
 
     # get date, size ,hot
@@ -38,10 +38,7 @@ def btyunso(kw="big bang"):
     infolist = list(zip(titlelist,datelist, sizelist, hotlist))
     # combine
     for info in infolist:
-        if PY3k:
-            logger.info('{} {} {} {}'.format(info[0].decode('utf-8'), info[1], info[2], info[3]))
-        else:
-            logger.info('{} {} {} {}'.format(info[0], info[1], info[2], info[3]))
+        logger.info(u'{} {} {} {}'.format(info[0].decode('utf-8'), info[1], info[2], info[3]))
 
 if __name__ == '__main__':
     #get page category
