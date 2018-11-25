@@ -29,16 +29,16 @@ def btyunso(kw="big bang"):
     html = pq(rsp)
     # get all title, seems py2 is unicode, so convert to str
     # py3 get bytes
-    titlelist = [title.text().encode('utf-8') for title in html('a.title').items()]
+    titlelist = [{"title": title.text().encode('utf-8')} for title in html('a.title').items()]
 
     # get date, size ,hot
-    datelist = [date.text() for date in html('span.label-success').items()]
-    sizelist = [size.text() for size in html('span.label-warning').items()]
-    hotlist = [hot.text() for hot in html('span.label-primary').items()]
+    datelist = [{"date": date.text()} for date in html('span.label-success').items()]
+    sizelist = [{"size": size.text()} for size in html('span.label-warning').items()]
+    hotlist = [{"hot": hot.text()} for hot in html('span.label-primary').items()]
     infolist = list(zip(titlelist,datelist, sizelist, hotlist))
     # combine
     for info in infolist:
-        logger.info(u'{} {} {} {}'.format(info[0].decode('utf-8'), info[1], info[2], info[3]))
+        logger.info(u'{} {} {} {}'.format(info[0],info[1], info[2], info[3]))
 
 if __name__ == '__main__':
     #get page category

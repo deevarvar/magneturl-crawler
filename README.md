@@ -9,6 +9,9 @@
 
 
 ## TODO
+* http://www.seaomc.com/archives/4168.html
+    * http://www.diaosisou.biz
+    * http://cnbtkitty.pw/
 * http://www.btyunsou.co/
     * validate the search uri
     * ctime, click, length
