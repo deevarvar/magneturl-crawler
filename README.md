@@ -12,6 +12,8 @@
 * http://www.seaomc.com/archives/4168.html
     * http://www.diaosisou.biz
     * http://cnbtkitty.pw/
+    * add compare in excel
+    * store old in redis
 * http://www.btyunsou.co/
     * validate the search uri
     * ctime, click, length

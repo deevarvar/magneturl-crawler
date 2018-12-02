@@ -12,7 +12,8 @@ def hello():
     logger.info('hello world')
 
 
-def btyunso(kw="big bang"):
+def btyunso(kw="sama-460"):
+    #1. read config
     defaultconf = YamlConfig()
     schema = defaultconf['btyunso']['schema']
     domain = defaultconf['btyunso']['domain']
@@ -24,12 +25,28 @@ def btyunso(kw="big bang"):
     kwpage = "{kw}_{category}_{index}.html".format(**pattern)
     qurl = ''.join([schema, domain, '/search/', kwpage])
     logger.info('qurl is {}'.format(qurl))
+
+    # 2. get page
     # btyunso is not that good, always return 100 pages and 10 per page
     rsp = gethtml(url=qurl, outhtml=os.path.join('./', kwpage))
     html = pq(rsp)
+
+    # 3. check if no result
+    if html('div.media-body').html() is None:
+        logger.error('No result for {}'.format(kw))
+        return -1
+
+    # 4. get pagination
+    #
+    if html('.pagination').html():
+        pass
+    else:
+        #only one page or No result
+        return -1
+    # 4. get result
     # get all title, seems py2 is unicode, so convert to str
     # py3 get bytes
-    titlelist = [{"title": title.text().encode('utf-8')} for title in html('a.title').items()]
+    titlelist = [{"title": title.text().encode('utf-8').decode('utf-8')} for title in html('a.title').items()]
 
     # get date, size ,hot
     datelist = [{"date": date.text()} for date in html('span.label-success').items()]

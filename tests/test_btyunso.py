@@ -1,6 +1,12 @@
 #  -*- encoding: utf-8 -*-
 # author: zhihuaye@gmail.com
 
+#no result: asdfasdfasdfasdf
+#one page: sama-460
+#6 pages: 火锅英雄
+#too much: big bang
+#
+
 import unittest
 import os
 import sys
@@ -42,6 +48,8 @@ class TestBtyunso(unittest.TestCase):
         # btyunsou is quite simple, three categories
         self.assertEqual(Counter(clist), Counter(['ctime', 'length', 'click']))
 
+    def test_pagination(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()

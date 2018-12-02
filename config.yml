@@ -12,4 +12,8 @@ btyunso:
   # http://www.btyunsou.co/search?kw=
   action: /search
   keyword: kw?
+  # default category: date, rank, size
+  category: rank
+  # display number, not so good
+  number: 10
 
