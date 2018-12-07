@@ -3,7 +3,9 @@
 from utils import PY3k, elapsedtime, YamlConfig, logger, gethtml
 import os
 from pyquery import PyQuery as pq
+import re
 
+STOREDPATH='./htmlsamples/btyunso'
 
 @elapsedtime
 def hello():
@@ -12,7 +14,7 @@ def hello():
     logger.info('hello world')
 
 
-def btyunso(kw="sama-460"):
+def btyunso(kw="asdfasdfasdfasdf"):
     #1. read config
     defaultconf = YamlConfig()
     schema = defaultconf['btyunso']['schema']
@@ -28,7 +30,7 @@ def btyunso(kw="sama-460"):
 
     # 2. get page
     # btyunso is not that good, always return 100 pages and 10 per page
-    rsp = gethtml(url=qurl, outhtml=os.path.join('./', kwpage))
+    rsp = gethtml(url=qurl, outhtml=os.path.join(STOREDPATH, kwpage))
     html = pq(rsp)
 
     # 3. check if no result
@@ -39,10 +41,17 @@ def btyunso(kw="sama-460"):
     # 4. get pagination
     #
     if html('.pagination').html():
-        pass
+        alinks = [a.attr("href") for a in html('ul.pagination a').items() if a.attr('href') ]
+        #last page index from href, text may be "末页" in more than 10 pages.
+        lastlink = alinks[-1]
+        indexpattern = r'.*_.*_(\d+).html'
+        cpattern = re.compile(indexpattern)
+        imatch = cpattern.search(lastlink)
+        lastindex = imatch.group(1)
+        logger.info("{} pages result for {} ".format(lastindex, kw))
     else:
         #only one page or No result
-        return -1
+        logger.info("only one page result for {} ".format(kw))
     # 4. get result
     # get all title, seems py2 is unicode, so convert to str
     # py3 get bytes

@@ -48,6 +48,9 @@ class TestBtyunso(unittest.TestCase):
         # btyunsou is quite simple, three categories
         self.assertEqual(Counter(clist), Counter(['ctime', 'length', 'click']))
 
+    def test_result(self):
+        pass
+
     def test_pagination(self):
         pass
 
