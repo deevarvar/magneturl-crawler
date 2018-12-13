@@ -18,8 +18,14 @@ def hello():
     logger.info('hello world')
 
 
-def convertsize(elem):
-    pass
+def convertsize(size):
+    unitlist = [0, 'B', 'KB', 'MB', 'GB', 'TB', 'PB']
+    num = size.split(' ')[0]
+    unit = size.split(' ')[1]
+    multiply = 0
+    if unit in unitlist:
+        multiply = 1024 ** (unitlist.index(unit))
+    return float(num) * multiply
 
 
 def btyunso(**kwargs):
@@ -91,9 +97,7 @@ def btyunso(**kwargs):
     elif category == 'click':
         results = sorted(results, key=lambda elem: int(elem[category]), reverse=True)
     elif category == 'size':
-        pass
-    #results is not sorted well...
-
+        results = sorted(results, key=lambda elem: convertsize(elem[category]), reverse=True)
 
     # combine
     for info in results:
@@ -122,7 +126,7 @@ if __name__ == '__main__':
                         help="output filename with .csv or .json, default will dump to local output dir")
     parser.add_argument('--pretty-oneline', '-p', action='store_true',
                         help='show result in oneline')
-    args = vars(parser.parse_args(['sama-460', '-s', '0']))
+    args = vars(parser.parse_args(['海王', '-s', '2']))
     logger.info(args)
     #get page category
     cq = btyunso(**args)
