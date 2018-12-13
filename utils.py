@@ -29,6 +29,7 @@ HEADERS = {
                   '(KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
 }
 
+
 CONFIGYML = os.path.join(os.path.dirname(os.path.realpath(__file__)),'./config.yml')
 
 class DotDict(dict):
@@ -212,7 +213,6 @@ def query(kw):
         estr = sys.exc_info()[1]
         logger.error("Exceptions: {} {}".format(etype, estr))
         sys.exit(-1)
-    return categorylist
 
 
 if __name__ == '__main__':
