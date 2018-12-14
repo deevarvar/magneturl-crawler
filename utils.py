@@ -107,8 +107,13 @@ def initlogger():
     logger.addHandler(ch)
 
     # file handler, set to debug
-    fh = logging.FileHandler(os.path.join(logpath,
-                                          ''.join([logprefix, timestamp, logpostfix])))
+    if PY3k:
+        fh = logging.FileHandler(os.path.join(logpath,
+                                              ''.join([logprefix, timestamp, logpostfix])),encoding='utf-8')
+    else:
+        #seems python2.7 logging can not do utf-8
+        fh = logging.FileHandler(os.path.join(logpath,
+                                              ''.join([logprefix, timestamp, logpostfix])))
     fh.setLevel(logging.DEBUG)
     fh.setFormatter(formatter)
     logger.addHandler(fh)

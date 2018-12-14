@@ -28,10 +28,13 @@ def convertsize(size):
     return float(num) * multiply
 
 
+def getresult(pageindex, num):
+    pass
+
 def btyunso(**kwargs):
     kw = kwargs['keyword']
     category = BTYUNSO_SORT[kwargs['sort']]
-    num = kwargs['number']
+    resultnum = kwargs['number']
     #1. read config
     defaultconf = YamlConfig()
     schema = defaultconf['btyunso']['schema']
@@ -55,6 +58,7 @@ def btyunso(**kwargs):
         logger.error('No result for {}'.format(kw))
         return -1
 
+    endindex = 1
     # 4. get pagination
     #
     if html('.pagination').html():
@@ -65,7 +69,14 @@ def btyunso(**kwargs):
         cpattern = re.compile(indexpattern)
         imatch = cpattern.search(lastlink)
         lastindex = imatch.group(1)
-        logger.info("{} pages result for {} ".format(lastindex, kw))
+        #kw is just str
+        logger.info("{} pages result for {} , user need {}".format(lastindex, kw, resultnum))
+
+        endindex = int(resultnum)/10
+        # check page
+        if int(resultnum)/10 > int(lastindex):
+            # iterate all pages to get links
+            endindex = lastindex
     else:
         #only one page or No result
         logger.info("only one page result for {} ".format(kw))
@@ -74,8 +85,9 @@ def btyunso(**kwargs):
     #uri pattern is span with class media-down, a with attr title
     magnetlist = ["magnet:?xt=urn:btih:" + a.attr('href').split('.')[0]
                    for a in html('span.media-down a[title]').items()]
-    # py3 get bytes
-    titlelist = [title.text().encode('utf-8').decode('utf-8') for title in html('a.title').items()]
+    # py3 title.text() is str
+    # py2.7 title.text() is unicode
+    titlelist = [title.text() for title in html('a.title').items()]
 
     # get date, size ,hot
     datelist = [date.text() for date in html('span.label-success').items()]
@@ -84,8 +96,12 @@ def btyunso(**kwargs):
 
     results = list()
     for index in range(len(titlelist)):
+        if not PY3k:
+            #py2.7 logging to file will raise UnicodeEncodeError:
+            titlelist[index] = titlelist[index].encode('utf-8')
         one = {
             "title": titlelist[index],
+            "magneturi": magnetlist[index],
             "click": clicklist[index],
             "date": datelist[index],
             "size": sizelist[index]
@@ -101,7 +117,8 @@ def btyunso(**kwargs):
 
     # combine
     for info in results:
-        logger.info(u'{}'.format(info))
+        logger.info('{0}, {1}, {2}, {3}, {4}'.format(info['title'], info['magneturi'], info['click']
+                                                 , info['date'], info['size']))
 
 
 def outputformat(output):
@@ -126,7 +143,7 @@ if __name__ == '__main__':
                         help="output filename with .csv or .json, default will dump to local output dir")
     parser.add_argument('--pretty-oneline', '-p', action='store_true',
                         help='show result in oneline')
-    args = vars(parser.parse_args(['海王', '-s', '2']))
+    args = vars(parser.parse_args(['毒液', '-s', '0']))
     logger.info(args)
     #get page category
     cq = btyunso(**args)
