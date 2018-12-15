@@ -97,13 +97,14 @@ def initlogger():
     logname, logpath, loglevel, logprefix, logpostfix = getlogconf()
     logger = logging.getLogger(logname)
     logger.setLevel(loglevel)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s '
+    consoleformatter = logging.Formatter('%(message)s')
+    fileformatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s '
                                   '- %(funcName)s - %(lineno)d - %(message)s')
 
     # console handler, set to info
     ch = logging.StreamHandler()
     ch.setLevel(logging.INFO)
-    ch.setFormatter(formatter)
+    ch.setFormatter(consoleformatter)
     logger.addHandler(ch)
 
     # file handler, set to debug
@@ -115,7 +116,7 @@ def initlogger():
         fh = logging.FileHandler(os.path.join(logpath,
                                               ''.join([logprefix, timestamp, logpostfix])))
     fh.setLevel(logging.DEBUG)
-    fh.setFormatter(formatter)
+    fh.setFormatter(fileformatter)
     logger.addHandler(fh)
     return logger
 
