@@ -1,6 +1,6 @@
 # -*- encoding=utf-8 -*-
 # author: zhihuaye@gmail.com
-from utils import PY3k, elapsedtime, YamlConfig, logger, gethtml
+from utils import PY3k, elapsedtime, YamlConfig, logger, gethtml, mkdirp
 import os
 import sys
 from pyquery import PyQuery as pq
@@ -12,6 +12,7 @@ import json
 from io import open
 
 STOREDPATH='./htmlsamples/btyunso'
+mkdirp(STOREDPATH)
 BTYUNSO_SORT = ['click', 'date', 'size']
 CONF = YamlConfig()
 SCHEMA = CONF['btyunso']['schema']
@@ -167,7 +168,7 @@ def btyunso(**kwargs):
         }
         results.append(one)
 
-    if category in 'date':
+    if category == 'date':
         results = sorted(results, key=lambda elem: elem[category], reverse=True)
     elif category == 'click':
         results = sorted(results, key=lambda elem: int(elem[category]), reverse=True)
