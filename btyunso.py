@@ -1,6 +1,6 @@
 # -*- encoding=utf-8 -*-
 # author: zhihuaye@gmail.com
-from utils import PY3k, elapsedtime, YamlConfig, logger, gethtml, mkdirp
+from utils import PY3k, elapsedtime, YamlConfig, logger, gethtml, mkdirp, outputformat
 import os
 import sys
 from pyquery import PyQuery as pq
@@ -176,18 +176,6 @@ def btyunso(**kwargs):
         results = sorted(results, key=lambda elem: convertsize(elem[category]), reverse=True)
 
     output(results, kwargs['output'], kwargs['pretty_oneline'])
-
-
-def outputformat(output):
-    try:
-        postfix = output.split('.')[1]
-        if postfix in ['csv', 'json']:
-            return output
-        else:
-            raise argparse.ArgumentTypeError("{} is not ended with csv or json".format(output))
-    except:
-        logger.info('type is {0}, error is {1}'.format(sys.exc_info()[0], sys.exc_info()[1]))
-        raise argparse.ArgumentTypeError("{} is not ended with csv or json".format(output))
 
 
 if __name__ == '__main__':

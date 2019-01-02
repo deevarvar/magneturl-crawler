@@ -21,6 +21,7 @@
     * store old in redis
 * http://cnbtkitty.pw/
     * post / with form data and 302 return search html
+    * max pages 1000 will be displayed.
 * define a search engine class
     * base url
     * search path

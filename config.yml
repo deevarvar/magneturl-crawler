@@ -16,4 +16,9 @@ btyunso:
   category: click
   # display number, not so good
   number: 10
+cnbtkitty:
+  domain: cnbtkitty.pw
+  schema: http://
+  method: post
+  postkey: keyword
 

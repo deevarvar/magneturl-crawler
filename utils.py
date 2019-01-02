@@ -11,6 +11,7 @@ import sys
 import errno
 #python 2.x do not support encoding in open
 from io import open
+import argparse
 
 PY3k = sys.version_info >= (3,)
 if not PY3k:
@@ -139,10 +140,17 @@ def elapsedtime(func):
 
 
 @elapsedtime
-def gethtml(url, outhtml=MAINHTML):
+def gethtml(url, outhtml=MAINHTML, method='GET', data=None, proxies=None):
+    #TODO: add one more option to avoid store html
     try:
-        rsp = requests.get(url, headers=HEADERS)
-        logger.info('encoding is {}'.format(rsp.encoding))
+        rsp = None
+        if method == 'GET':
+            rsp = requests.get(url, headers=HEADERS, proxies=proxies)
+        elif method == 'POST':
+            rsp = requests.post(url, headers=HEADERS, data=data, proxies=proxies)
+        #logger.info('encoding is {}'.format(rsp.encoding))
+        if rsp == None:
+            raise Exception("wrong method {} for requests".format(method))
         with open(outhtml, encoding='utf-8', mode='w+') as mainhtml:
             mainhtml.write(rsp.text)
         return rsp.text
@@ -220,6 +228,16 @@ def query(kw):
         logger.error("Exceptions: {} {}".format(etype, estr))
         sys.exit(-1)
 
+def outputformat(output):
+    try:
+        postfix = output.split('.')[1]
+        if postfix in ['csv', 'json']:
+            return output
+        else:
+            raise argparse.ArgumentTypeError("{} is not ended with csv or json".format(output))
+    except:
+        logger.info('type is {0}, error is {1}'.format(sys.exc_info()[0], sys.exc_info()[1]))
+        raise argparse.ArgumentTypeError("{} is not ended with csv or json".format(output))
 
 if __name__ == '__main__':
     ret = getlogconf()
