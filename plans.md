@@ -22,6 +22,8 @@
 * http://cnbtkitty.pw/
     * post / with form data and 302 return search html
     * max pages 1000 will be displayed.
+    * may add timeout or proxy to avoid cloudfare's protection
+        *https://www.zhihu.com/question/55807309
 * define a search engine class
     * base url
     * search path

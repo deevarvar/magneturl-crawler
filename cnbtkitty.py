@@ -9,7 +9,8 @@ import re
 import argparse
 import requests
 import concurrent.futures
-
+import time
+from random import randint
 
 STOREDPATH='./htmlsamples/cnbtkitty'
 mkdirp(STOREDPATH)
@@ -21,29 +22,6 @@ BTURL=''.join([SCHEMA, DOMAIN])
 BTKITTY_SORT = ['Relevance', 'AddedDate', 'Size', 'Files', 'Popularity']
 
 #no result page: abcdefghijg
-
-def demo():
-    formdata = {
-        "keyword": "big bang theory"
-    }
-    rsp = requests.post(BTURL, data=formdata)
-    with open('./cnbtkitty.html', 'w+', encoding='utf-8') as mainhtml:
-        mainhtml.write(rsp.text)
-    html = pq(rsp.text)
-    if html('div.list-box').html() is None:
-        print("no result")
-        exit(-1)
-    else:
-        alinks = [ a.attr('href') for a in html('div.list-box dl.list-con dt a').items()]
-        print(alinks)
-    # then need to parse second html to get the real magneturi
-    secsample = 'http://cnbtkitty.pw/t/BcGHDQAwCAOwlwgjEueU9f8JtSHBVTHZoWmU22N2k3eAt2TSBqwP.html'
-    rsp = requests.get(secsample)
-    with open('./second.html', 'w+', encoding='utf-8') as secondhtml:
-        secondhtml.write(rsp.text)
-    html = pq(rsp.text)
-    dlink = html('dd.magnet a').text()
-    print(dlink)
 
 proxies = {
 }
@@ -67,12 +45,16 @@ def genresulturl(preurl=None, category=0,index=1):
 
 def fetchresult(url):
     target = BTURL + url
-    logger.info(target)
-
     rsp = gethtml(url=target, outhtml=os.path.join(STOREDPATH, url.split('/')[2]), proxies=proxies)
     html = pq(rsp)
     dlink = html('dd.magnet a').text()
-    logger.info(dlink)
+    #FIXME: ever url is valid, the magnet uri may be none... WTF~!
+    if dlink:
+        logger.info(dlink)
+    else:
+        logger.info("no result for {}.".format(target))
+
+    time.sleep(randint(1, 5))
 
 @elapsedtime
 def cnbtkitty(**kwargs):
@@ -97,10 +79,12 @@ def cnbtkitty(**kwargs):
     # 3. get result page
     alinks = [a.attr('href') for a in html('div.list-box dl.list-con dt a').items()]
     logger.info(alinks)
-    '''
-        with concurrent.futures.ProcessPoolExecutor(max_workers=5) as executor:
-        executor.map(fetchresult,alinks)
-    '''
+
+    with concurrent.futures.ProcessPoolExecutor(max_workers=2) as executor:
+        #map will return in iterate order
+        # submit and as_completed will return in completed order
+        executor.map(fetchresult, alinks)
+
     #fetchresult(alinks[0])
 
 
