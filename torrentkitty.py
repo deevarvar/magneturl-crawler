@@ -7,15 +7,10 @@
 #
 # only one way:
 # 1.0  https://github.com/Anorov/cloudflare-scrape, extra node js should be installed , use node js
-# 1.1  use execute_script to replace the node
-# 1.2 https://github.com/Anorov/cloudflare-scrape/issues/180 not secure to use js2py
-# 2. unreachable
-# https://stackoverflow.com/questions/5799228/how-to-get-status-code-by-using-selenium-py-python-code/39991889#39991889
-# use selenium to emulate the js and use get_log to retrive the cookies,
-# but cf need cf_clearance indeed, no way to get cf_clearance.
-# some ideas: https://github.com/webdriverio/webdriverio/issues/1003
-#   or use https://github.com/cryzed/Selenium-Requests to get detailed rsp including redirect
-#
+# 1.1 https://github.com/Anorov/cloudflare-scrape/issues/180 not secure to use js2py
+# because cf_clearance is in a different url
+# selenium can not fix this.
+
 
 
 # TODO:
@@ -110,6 +105,7 @@ def try_get_log():
     finally:
         driver.close() # close the driver
 
-
+import cloudflarescrape as cfscrape
 if __name__ == '__main__':
-    pass
+    tokens, user_agent = cfscrape.get_tokens("https://torrentkitty.tv/search")
+    print('{} {}'.format(tokens, user_agent))
